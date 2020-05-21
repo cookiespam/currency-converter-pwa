@@ -63,6 +63,8 @@ class CurrencyConverter {
             storedCurrencies = await localForage.setItem('selectedCurrencies', defaultCurrencies);
         }
 
+        if (!data) { return []; }
+
         Object.entries(data).forEach((currency) => {
             for (let c of storedCurrencies) {
                 if (currency[1].id === c.id) {
