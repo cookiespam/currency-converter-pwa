@@ -106,12 +106,17 @@ class CurrencyConverter {
 
     change(data, currencyId, amount) {
         Object.entries(data).map((currency) => {
-            currency[1].rates = cashify.convert(amount, { from: currencyId, to: currency[1].id });
+            try {
+                currency[1].rates = cashify.convert(Number(amount), { from: currencyId, to: currency[1].id });
 
-            if (currency[1].id !== currencyId) {
-                currency[1].rates = currency[1].rates.toFixed(2);
+                if (currency[1].id === currencyId) {
+                    currency[1].rates = amount;
+                } else {
+                    currency[1].rates = currency[1].rates.toFixed(2);
+                }
+            } catch (e) {
+                console.log(e);
             }
-    
             return currency;
         });
     }
