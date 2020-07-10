@@ -50,7 +50,4 @@ function CurrencyRow(props) {
     );
 }
 
-
-
-
 export default CurrencyRow;

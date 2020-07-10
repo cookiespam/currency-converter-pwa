@@ -10,6 +10,10 @@ import Fab from '@material-ui/core/Fab';
 import CurrencyConverter from './services/CurrencyConverter'
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import { ThemeProvider } from "@material-ui/core/styles";
+import { getTheme } from "./theme";
+import Switch from "@material-ui/core/Switch";
+import {useDarkMode} from "./useDarkMode";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,9 +34,9 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  // let isHome = true;
   const [isHome, setIsHome] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [darkState , themeToggler] = useDarkMode();
 
   const handleChange = () => {
     setIsHome(!isHome);
@@ -42,21 +46,24 @@ function App() {
     CurrencyConverter.update().then(() => {
       setIsLoaded(true);
     });
-  });
+  }, []);
 
   return (
-    <div className="App">
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Currency Conveter
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <CssBaseline />
-      <View isLoaded={isLoaded} isHome={isHome} />
-      <Fab color="primary" className={classes.fab} onClick={handleChange}>{isHome ? <AddIcon /> : <CloseIcon />}</Fab>
-    </div>
+    <ThemeProvider theme={getTheme(darkState)}>
+      <div className="App">
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" className={classes.title}>
+              Currency Conveter
+            </Typography>
+            <Switch checked={darkState || false} onChange={themeToggler} />
+          </Toolbar>
+        </AppBar>
+        <CssBaseline />
+        <View isLoaded={isLoaded} isHome={isHome} />
+        <Fab color="primary" className={classes.fab} onClick={handleChange}>{isHome ? <AddIcon /> : <CloseIcon />}</Fab>
+      </div>
+    </ThemeProvider>
   );
 }
 
