@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import React, { useState, useEffect, Fragment } from 'react';
 import Home from './HomeComponent';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import AllComponent from './AllComponent';
-import Fab from '@material-ui/core/Fab';
 import CurrencyConverter from './services/CurrencyConverter'
-import AddIcon from '@material-ui/icons/Add';
-import CloseIcon from '@material-ui/icons/Close';
-import { ThemeProvider } from "@material-ui/core/styles";
+import { Add, Close } from '@material-ui/icons';
 import { getTheme } from "./theme";
-import Switch from "@material-ui/core/Switch";
-import {useDarkMode} from "./useDarkMode";
+import { Button, Snackbar, ThemeProvider, Switch, makeStyles, Fab, Typography, Toolbar, AppBar, CssBaseline, IconButton } from "@material-ui/core";
+import { useDarkMode } from "./useDarkMode";
+import * as serviceWorker from "./serviceWorker";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,17 +29,47 @@ function App() {
   const classes = useStyles();
   const [isHome, setIsHome] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [darkState , themeToggler] = useDarkMode();
+  const [darkState, themeToggler] = useDarkMode();
+  const [newVersionAvailable, setNewVersionAvailable] = useState(false);
+  const [waitingWorker, setWaitingWorker] = useState({});
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleChange = () => {
     setIsHome(!isHome);
   }
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
+
   useEffect(() => {
     CurrencyConverter.update().then(() => {
       setIsLoaded(true);
     });
-  }, []);
+
+    if (process.env.NODE_ENV === 'production') {
+      serviceWorker.register({ onUpdate: onServiceWorkerUpdate });
+    }
+
+    if (newVersionAvailable) //show snackbar with refresh button
+      setOpenSnackbar(true);
+
+  }, [newVersionAvailable]);
+
+  const onServiceWorkerUpdate = (registration) => {
+    setNewVersionAvailable(true);
+    setWaitingWorker(registration && registration.waiting);
+  };
+
+  const updateServiceWorker = (event, reason) => {
+    waitingWorker && waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    setNewVersionAvailable(false);
+    window.location.reload();
+  };
 
   return (
     <ThemeProvider theme={getTheme(darkState)}>
@@ -61,7 +84,23 @@ function App() {
         </AppBar>
         <CssBaseline />
         <View isLoaded={isLoaded} isHome={isHome} />
-        <Fab color="primary" className={classes.fab} onClick={handleChange}>{isHome ? <AddIcon /> : <CloseIcon />}</Fab>
+        <Fab color="primary" className={classes.fab} onClick={handleChange}>{isHome ? <Add /> : <Close />}</Fab>
+
+        <Snackbar
+        open={openSnackbar}
+        onClose={handleSnackbarClose}
+        message="A new version was released"
+        action={
+          <Fragment>
+            <Button color="secondary" size="small" onClick={updateServiceWorker}>
+              REFRESH
+            </Button>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
+              <Close fontSize="small" />
+            </IconButton>
+          </Fragment>
+        }
+      />
       </div>
     </ThemeProvider>
   );
