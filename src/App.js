@@ -1,12 +1,12 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import Home from './HomeComponent';
-import AllComponent from './AllComponent';
-import CurrencyConverter from './services/CurrencyConverter'
-import { Add, Close } from '@material-ui/icons';
+import { Close, Assessment } from '@material-ui/icons';
 import { getTheme } from "./theme";
-import { Button, Snackbar, ThemeProvider, Switch, makeStyles, Fab, Typography, Toolbar, AppBar, CssBaseline, IconButton } from "@material-ui/core";
+import { Button, Snackbar, ThemeProvider, Switch, makeStyles, Typography, Toolbar, AppBar, CssBaseline, IconButton } from "@material-ui/core";
 import { useDarkMode } from "./useDarkMode";
 import * as serviceWorker from "./serviceWorker";
+import Router from "./Router";
+import { fetchCurrencies } from './actions/currenciesActions';
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,24 +19,18 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   fab: {
-    position: 'absolute',
+    position: 'relative',
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   }
 }));
 
-function App() {
+function App({ dispatch, loading, rates, hasErrors, view }) {
   const classes = useStyles();
-  const [isHome, setIsHome] = useState(true);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [darkState, themeToggler] = useDarkMode();
   const [newVersionAvailable, setNewVersionAvailable] = useState(false);
   const [waitingWorker, setWaitingWorker] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const handleChange = () => {
-    setIsHome(!isHome);
-  }
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -47,9 +41,7 @@ function App() {
   };
 
   useEffect(() => {
-    CurrencyConverter.update().then(() => {
-      setIsLoaded(true);
-    });
+    dispatch(fetchCurrencies());
 
     if (process.env.NODE_ENV === 'production') {
       serviceWorker.register({ onUpdate: onServiceWorkerUpdate });
@@ -58,7 +50,7 @@ function App() {
     if (newVersionAvailable) //show snackbar with refresh button
       setOpenSnackbar(true);
 
-  }, [newVersionAvailable]);
+  }, [dispatch, newVersionAvailable]);
 
   const onServiceWorkerUpdate = (registration) => {
     setNewVersionAvailable(true);
@@ -71,6 +63,12 @@ function App() {
     window.location.reload();
   };
 
+  const renderView = () =>  {
+    if(loading || hasErrors || !rates || rates.length === 0) return;
+
+    return (<Router />)
+  }
+
   return (
     <ThemeProvider theme={getTheme(darkState)}>
       <div className="App">
@@ -79,44 +77,40 @@ function App() {
             <Typography variant="h6" className={classes.title}>
               Currency Conveter
             </Typography>
+            <IconButton color="inherit" aria-label="statistics">
+              <Assessment />
+            </IconButton>
             <Switch checked={darkState || false} onChange={themeToggler} />
           </Toolbar>
         </AppBar>
         <CssBaseline />
-        <View isLoaded={isLoaded} isHome={isHome} />
-        <Fab color="primary" className={classes.fab} onClick={handleChange}>{isHome ? <Add /> : <Close />}</Fab>
-
+        
+        {renderView()}
         <Snackbar
-        open={openSnackbar}
-        onClose={handleSnackbarClose}
-        message="A new version was released"
-        action={
-          <Fragment>
-            <Button color="secondary" size="small" onClick={updateServiceWorker}>
-              REFRESH
-            </Button>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
-              <Close fontSize="small" />
-            </IconButton>
-          </Fragment>
-        }
-      />
+          open={openSnackbar}
+          onClose={handleSnackbarClose}
+          message="A new version was released"
+          action={
+            <Fragment>
+              <Button color="secondary" size="small" onClick={updateServiceWorker}>
+                REFRESH
+              </Button>
+              <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
+                <Close fontSize="small" />
+              </IconButton>
+            </Fragment>
+          }
+        />
       </div>
     </ThemeProvider>
   );
 }
 
-function View({ isLoaded, isHome }) {
-  if (!isLoaded) {
-    return null;
-  }
+const mapStateToProps = state => ({
+  loading: state.currencies.loading,
+  rates: state.currencies.currencies,
+  hasErrors: state.currencies.hasErrors,
+  view: state.views.view
+})
 
-  if (isHome) {
-    return (<Home />)
-  } else {
-    return (<AllComponent />)
-  }
-
-}
-
-export default App;
+export default connect(mapStateToProps)(App);

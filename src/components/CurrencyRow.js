@@ -18,18 +18,18 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function CurrencyRow(props) {
+function CurrencyRow({currency, change}) {
     const classes = useStyles();
 
     function handleChange(event) {
-        props.change(props.id, event.target.value)
+        change(currency.id, event.target.value)
     }
 
     return (
         <Grid container spacing={3}>
             <Grid className={classes.currencyText} item sm={3}>
                 <Typography variant="body1">
-                    {props.name} ({props.id})
+                    {currency.name} ({currency.id})
                 </Typography>
             </Grid>
             <Grid item sm={9}>
@@ -42,7 +42,7 @@ function CurrencyRow(props) {
                         shrink: true,
                     }}
                     variant="outlined"
-                    value={props.rate}
+                    value={currency.rates}
                     onChange={handleChange}
                 />
             </Grid>

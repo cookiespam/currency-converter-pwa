@@ -1,5 +1,5 @@
 import localForage from 'localforage';
-import {Cashify} from 'cashify';
+import {convert} from 'cashify';
 import '../env';
 
 const defaultCurrencies = [
@@ -8,15 +8,7 @@ const defaultCurrencies = [
         {id: "USD", name: "United States Dollar", rates: "1.17"}
     ];
 
-let cashify;
-let data;
-
 class CurrencyConverter {
-
-    async update() {
-        if (data) { return data;}
-        data = await this.updateRates();
-    }
 
     async updateRates() {
         let rates = null;
@@ -54,7 +46,7 @@ class CurrencyConverter {
         return await localForage.getItem('data');
     }
 
-    async getSelectedCurrencies() {
+    async getSelectedCurrencies(rates) {
         let selectedCurrencies = [];
 
         let storedCurrencies = await localForage.getItem('selectedCurrencies');
@@ -63,17 +55,19 @@ class CurrencyConverter {
             storedCurrencies = await localForage.setItem('selectedCurrencies', defaultCurrencies);
         }
 
-        if (!data) { return []; }
-
-        Object.entries(data).forEach((currency) => {
-            for (let c of storedCurrencies) {
-                if (currency[1].id === c.id) {
-                    selectedCurrencies.push(currency[1]);
+        if (rates) { 
+            Object.entries(rates).forEach((currency) => {
+                for (let c of storedCurrencies) {
+                    if (currency[1].id === c.id) {
+                        selectedCurrencies.push(currency[1]);
+                    }
                 }
-            }
-        });
+            });
         
-        return selectedCurrencies;
+            return selectedCurrencies;
+        }
+
+        return storedCurrencies;
     }
 
     async setSelectedCurrencies(selected) {
@@ -82,9 +76,6 @@ class CurrencyConverter {
 
     async populate(currencyList, rates) {
         const data = [];
-
-        cashify = new Cashify({base: 'EUR', rates: rates.rates});
-        // this.date = this.getDate(rates.timestamp);
 
         for(let key in currencyList) {
             let obj = {};
@@ -104,10 +95,16 @@ class CurrencyConverter {
         return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${('0'+date.getMinutes()).slice(-2)}`;
     }
 
-    change(data, currencyId, amount) {
-        Object.entries(data).map((currency) => {
+    change(currencyRates, selectedCurrencies, currencyId, amount) {
+        const rates = {};
+
+        for (let currency of currencyRates) {
+            rates[currency.id] = Number(currency.rates);
+        }
+
+        Object.entries(selectedCurrencies).map((currency) => {
             try {
-                currency[1].rates = cashify.convert(Number(amount), { from: currencyId, to: currency[1].id });
+                currency[1].rates = convert(Number(amount), { from: currencyId, to: currency[1].id, base: 'EUR', rates});
 
                 if (currency[1].id === currencyId) {
                     currency[1].rates = amount;
@@ -119,6 +116,8 @@ class CurrencyConverter {
             }
             return currency;
         });
+
+        return selectedCurrencies;
     }
 }
 
