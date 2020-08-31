@@ -40,8 +40,9 @@ export function fetchCurrencies() {
     dispatch(getCurrencies())
 
     try {
+      const cache = await CurrencyConverter.getOfflineData();
+      dispatch(getCurrenciesSuccess(cache))
       const data = await CurrencyConverter.updateRates();
-      
       dispatch(getCurrenciesSuccess(data))
     } catch (error) {
       dispatch(getCurrenciesFailure())
