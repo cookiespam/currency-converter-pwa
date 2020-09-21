@@ -98,26 +98,31 @@ class CurrencyConverter {
     change(currencyRates, selectedCurrencies, currencyId, amount) {
         const rates = {};
 
-        for (let currency of currencyRates) {
+        for (const currency of currencyRates) {
             rates[currency.id] = Number(currency.rates);
         }
 
-        Object.entries(selectedCurrencies).map((currency) => {
-            try {
-                currency[1].rates = convert(Number(amount), { from: currencyId, to: currency[1].id, base: 'EUR', rates});
+        const arr = []
 
-                if (currency[1].id === currencyId) {
-                    currency[1].rates = amount;
+        for (let selected of selectedCurrencies) {
+            let obj = {};
+            obj.name = selected.name;
+            obj.id = selected.id;
+            try {
+                obj.rates = convert(Number(amount), { from: currencyId, to: selected.id, base: 'EUR', rates});
+
+                if (obj.id === currencyId) {
+                    obj.rates = amount;
                 } else {
-                    currency[1].rates = currency[1].rates.toFixed(2);
+                    obj.rates = obj.rates.toFixed(2);
                 }
             } catch (e) {
                 console.log(e);
             }
-            return currency;
-        });
+            arr.push(obj);
+        }
 
-        return selectedCurrencies;
+        return arr;
     }
 }
 
