@@ -1,6 +1,5 @@
 import localForage from 'localforage';
 import {convert} from 'cashify';
-import '../env';
 
 const defaultCurrencies = [
         {id: "EUR", name: "Euro", rates: "1.00"},

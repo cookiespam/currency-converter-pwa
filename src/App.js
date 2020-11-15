@@ -3,7 +3,7 @@ import { Close, Assessment } from '@material-ui/icons';
 import { getTheme } from "./theme";
 import { Button, Snackbar, ThemeProvider, Switch, makeStyles, Typography, Toolbar, AppBar, CssBaseline, IconButton } from "@material-ui/core";
 import { useDarkMode } from "./useDarkMode";
-import * as serviceWorker from "./serviceWorker";
+import * as serviceWorker from "./serviceWorkerRegistration";
 import Router from "./Router";
 import { fetchCurrencies } from './actions/currenciesActions';
 import { connect } from "react-redux";
