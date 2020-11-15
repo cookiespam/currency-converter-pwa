@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/currency-converter-pwa/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/currency-converter-pwa/static/js/main.97b7a10a.chunk.js",
-    "main.js.map": "/currency-converter-pwa/static/js/main.97b7a10a.chunk.js.map",
+    "main.js": "/currency-converter-pwa/static/js/main.bb3c2adc.chunk.js",
+    "main.js.map": "/currency-converter-pwa/static/js/main.bb3c2adc.chunk.js.map",
     "runtime-main.js": "/currency-converter-pwa/static/js/runtime-main.a375aee1.js",
     "runtime-main.js.map": "/currency-converter-pwa/static/js/runtime-main.a375aee1.js.map",
     "static/js/2.34028bfa.chunk.js": "/currency-converter-pwa/static/js/2.34028bfa.chunk.js",
     "static/js/2.34028bfa.chunk.js.map": "/currency-converter-pwa/static/js/2.34028bfa.chunk.js.map",
-    "static/js/3.3d6dddcc.chunk.js": "/currency-converter-pwa/static/js/3.3d6dddcc.chunk.js",
-    "static/js/3.3d6dddcc.chunk.js.map": "/currency-converter-pwa/static/js/3.3d6dddcc.chunk.js.map",
+    "static/js/3.6b251d47.chunk.js": "/currency-converter-pwa/static/js/3.6b251d47.chunk.js",
+    "static/js/3.6b251d47.chunk.js.map": "/currency-converter-pwa/static/js/3.6b251d47.chunk.js.map",
     "static/js/4.3a69df65.chunk.js": "/currency-converter-pwa/static/js/4.3a69df65.chunk.js",
     "static/js/4.3a69df65.chunk.js.map": "/currency-converter-pwa/static/js/4.3a69df65.chunk.js.map",
     "static/js/5.6afa7112.chunk.js": "/currency-converter-pwa/static/js/5.6afa7112.chunk.js",
@@ -20,14 +20,14 @@
     "service-worker.js.map": "/currency-converter-pwa/service-worker.js.map",
     "static/css/main.6dea0f05.chunk.css.map": "/currency-converter-pwa/static/css/main.6dea0f05.chunk.css.map",
     "static/js/2.34028bfa.chunk.js.LICENSE.txt": "/currency-converter-pwa/static/js/2.34028bfa.chunk.js.LICENSE.txt",
-    "static/js/3.3d6dddcc.chunk.js.LICENSE.txt": "/currency-converter-pwa/static/js/3.3d6dddcc.chunk.js.LICENSE.txt",
+    "static/js/3.6b251d47.chunk.js.LICENSE.txt": "/currency-converter-pwa/static/js/3.6b251d47.chunk.js.LICENSE.txt",
     "static/js/4.3a69df65.chunk.js.LICENSE.txt": "/currency-converter-pwa/static/js/4.3a69df65.chunk.js.LICENSE.txt",
     "static/js/5.6afa7112.chunk.js.LICENSE.txt": "/currency-converter-pwa/static/js/5.6afa7112.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.a375aee1.js",
-    "static/js/3.3d6dddcc.chunk.js",
+    "static/js/3.6b251d47.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.97b7a10a.chunk.js"
+    "static/js/main.bb3c2adc.chunk.js"
   ]
 }
