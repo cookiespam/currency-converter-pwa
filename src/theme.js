@@ -3,7 +3,7 @@ import {
     lightBlue,
     deepPurple
   } from "@material-ui/core/colors";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme } from '@material-ui/core/styles';
 
 export function getTheme(darkState = false) {
     const palletType = darkState ? "dark" : "light";

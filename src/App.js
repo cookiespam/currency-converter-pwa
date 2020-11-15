@@ -1,11 +1,20 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import { Close, Assessment } from '@material-ui/icons';
+import React, { useState, useEffect, Fragment } from "react";
+import Close from "@material-ui/icons/Close";
+import Assessment from "@material-ui/icons/Assessment";
 import { getTheme } from "./theme";
-import { Button, Snackbar, ThemeProvider, Switch, makeStyles, Typography, Toolbar, AppBar, CssBaseline, IconButton } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import { ThemeProvider, makeStyles } from "@material-ui/core/styles";
+import Switch from "@material-ui/core/Switch";
+import Typography from "@material-ui/core/Typography";
+import Toolbar from "@material-ui/core/Toolbar";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import AppBar from "@material-ui/core/AppBar";
+import IconButton from "@material-ui/core/IconButton";
 import { useDarkMode } from "./useDarkMode";
 import * as serviceWorker from "./serviceWorkerRegistration";
 import Router from "./Router";
-import { fetchCurrencies } from './actions/currenciesActions';
+import { fetchCurrencies } from "./actions/currenciesActions";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -19,10 +28,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   fab: {
-    position: 'relative',
+    position: "relative",
     bottom: theme.spacing(2),
     right: theme.spacing(2),
-  }
+  },
 }));
 
 function App({ dispatch, loading, rates, hasErrors, view }) {
@@ -43,13 +52,13 @@ function App({ dispatch, loading, rates, hasErrors, view }) {
   useEffect(() => {
     dispatch(fetchCurrencies());
 
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       serviceWorker.register({ onUpdate: onServiceWorkerUpdate });
     }
 
-    if (newVersionAvailable) //show snackbar with refresh button
+    if (newVersionAvailable)
+      //show snackbar with refresh button
       setOpenSnackbar(true);
-
   }, [dispatch, newVersionAvailable]);
 
   const onServiceWorkerUpdate = (registration) => {
@@ -63,11 +72,11 @@ function App({ dispatch, loading, rates, hasErrors, view }) {
     window.location.reload();
   };
 
-  const renderView = () =>  {
-    if(loading || hasErrors || !rates || rates.length === 0) return;
+  const renderView = () => {
+    if (loading || hasErrors || !rates || rates.length === 0) return;
 
-    return (<Router />)
-  }
+    return <Router />;
+  };
 
   return (
     <ThemeProvider theme={getTheme(darkState)}>
@@ -84,7 +93,7 @@ function App({ dispatch, loading, rates, hasErrors, view }) {
           </Toolbar>
         </AppBar>
         <CssBaseline />
-        
+
         {renderView()}
         <Snackbar
           open={openSnackbar}
@@ -92,10 +101,19 @@ function App({ dispatch, loading, rates, hasErrors, view }) {
           message="A new version was released"
           action={
             <Fragment>
-              <Button color="secondary" size="small" onClick={updateServiceWorker}>
+              <Button
+                color="secondary"
+                size="small"
+                onClick={updateServiceWorker}
+              >
                 REFRESH
               </Button>
-              <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
+              <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleSnackbarClose}
+              >
                 <Close fontSize="small" />
               </IconButton>
             </Fragment>
@@ -106,11 +124,11 @@ function App({ dispatch, loading, rates, hasErrors, view }) {
   );
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   loading: state.currencies.loading,
   rates: state.currencies.currencies,
   hasErrors: state.currencies.hasErrors,
-  view: state.views.view
-})
+  view: state.views.view,
+});
 
 export default connect(mapStateToProps)(App);
